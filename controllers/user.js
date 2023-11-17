@@ -3,15 +3,15 @@ import bcrypt from "bcrypt";
 import { setCookie } from "../utils/features.js";
 import ErrorHandler from "../middlewares/error.js";
 export const getAllUsers = async (req, res, next) => {
- try {
-  const user = await User.find();
-  res.json({
-    succes: true,
-    user,
-  });
- } catch (error) {
-  next(error)
- }
+  try {
+    const user = await User.find();
+    res.json({
+      succes: true,
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const register = async (req, res, next) => {
@@ -54,17 +54,19 @@ export const login = async (req, res, next) => {
 };
 
 export const LogOut = async (req, res, next) => {
- try {
-  res
-  .cookie("token", "", {
-    httpOnly: true,
-    expires: new Date(Date.now()),
-  })
-  .json({
-    succes: true,
-    user: req.user,
-  });
- } catch (error) {
-  next(error)
- }
+  try {
+    res
+      .cookie("token", "", {
+        httpOnly: true,
+        expires: new Date(Date.now()),
+        sameSite: process.env.NODE_ENV == "Development" ? "lax" : "none",
+        secure: process.env.NODE_ENV == "Development" ? true : false,
+      })
+      .json({
+        succes: true,
+        user: req.user,
+      });
+  } catch (error) {
+    next(error);
+  }
 };
